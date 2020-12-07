@@ -1,0 +1,15 @@
+
+# IDE
+**/*.iml
+**/.idea/
+**/*.ipr
+**/*.iws
+
+# build
+/.gradle
+**/build
+**/out
+**/target
+
+# project
+**/*/application-local.yml
