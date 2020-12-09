@@ -1,4 +1,4 @@
-# Sample project for a gRPC web service
+# Sample project for a gRPC (& ReST) web service
 
 A simple project to showcase a gRPC webservice in combination with Spring Boot. 
 For detailed information what gRPC is, see the block quote.
@@ -47,7 +47,10 @@ similarily.
 
 ## gRPC misc
 
-On my way to exploring, understanding and implement a gRPC service 
+- On my way to exploring, understanding and implement a gRPC service 
 I encountered a very nice tool, similar to _postman_.
-
-> [BloomRPC](https://github.com/uw-labs/bloomrpc)
+  
+    > [BloomRPC](https://github.com/uw-labs/bloomrpc)
+  
+- A very nice introduction to gRPC with spring in Java and hands-on tutorial, 
+I'll recommend [grpc-java-example](https://codenotfound.com/grpc-java-example.html)

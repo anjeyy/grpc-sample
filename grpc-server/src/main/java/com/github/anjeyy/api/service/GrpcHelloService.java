@@ -14,9 +14,12 @@ public class GrpcHelloService extends HelloServiceGrpc.HelloServiceImplBase {
     @Override
     public void hello(HelloRequest request, StreamObserver<HelloResponse> responseObserver) {
 
-        HelloResponse helloResponse = HelloResponse.newBuilder()
-                                                   .setGeeting("My first grpc response with spring boot.")
-                                                   .build();
+        String response =
+            String.format("Hello %s, %s. This is my first grpc response with spring boot.",
+                request.getLastName(),
+                request.getFirstName());
+        HelloResponse helloResponse = HelloResponse.newBuilder().setGreeting(response).build();
+        
         responseObserver.onNext(helloResponse);
         responseObserver.onCompleted();
     }
