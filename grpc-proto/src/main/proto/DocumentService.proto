@@ -1,18 +1,28 @@
 syntax = "proto3";
 option java_multiple_files = true;
-package com.github.anjeyy.proto;
+package com.github.anjeyy.proto.document;
+
+import "google/protobuf/empty.proto";
 
 
-message HelloRequest{
-  string firstName = 1;
-  string lastName = 2;
+message DocumentRequest{
+  string docId = 1;
 }
 
-message HelloResponse{
-  string greeting = 1;
+message DocumentResponse{
+  string docId = 1;
+  string title = 2;
+  string person = 3;
+  int32 filesize = 4;
 }
 
-service HelloService{
-  rpc getAllDocuments(HelloRequest) returns (HelloResponse);
-  rpc getDocumentById(HelloRequest) returns (HelloResponse);
+message DocumentResponseList{
+  repeated DocumentResponse documentResponse = 1;
 }
+
+service DocumentService{
+  rpc getAllDocuments(google.protobuf.Empty) returns (stream DocumentResponse);
+  rpc getAllDocumentsAsList(google.protobuf.Empty) returns(DocumentResponseList);
+  rpc getDocumentById(DocumentRequest) returns (DocumentResponse);
+}
+

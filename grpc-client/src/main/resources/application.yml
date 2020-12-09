@@ -22,3 +22,6 @@ grpc:
     hello-service:
       address: static://localhost:9090
       negotiationType: plaintext
+    document-service:
+      address: static://localhost:9090
+      negotiationType: plaintext

@@ -1,8 +1,8 @@
 package com.github.anjeyy.api.service;
 
-import com.github.anjeyy.proto.HelloRequest;
-import com.github.anjeyy.proto.HelloResponse;
-import com.github.anjeyy.proto.HelloServiceGrpc;
+import com.github.anjeyy.proto.simple.HelloRequest;
+import com.github.anjeyy.proto.simple.HelloResponse;
+import com.github.anjeyy.proto.simple.HelloServiceGrpc;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -19,7 +19,7 @@ public class GrpcHelloService extends HelloServiceGrpc.HelloServiceImplBase {
                 request.getLastName(),
                 request.getFirstName());
         HelloResponse helloResponse = HelloResponse.newBuilder().setGreeting(response).build();
-        
+
         responseObserver.onNext(helloResponse);
         responseObserver.onCompleted();
     }
