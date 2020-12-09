@@ -11,4 +11,24 @@
 
   <artifactId>grpc-client</artifactId>
 
+
+  <dependencies>
+    <dependency>
+      <groupId>com.github.anjeyy</groupId>
+      <artifactId>grpc-proto</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.devh</groupId>
+      <artifactId>grpc-client-spring-boot-starter</artifactId>
+      <version>${grpc.spring.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>grpc-netty-shaded</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
 </project>
