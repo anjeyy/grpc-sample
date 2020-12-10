@@ -10,6 +10,8 @@ import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 
@@ -36,11 +38,16 @@ public class GrpcDocumentService extends DocumentServiceGrpc.DocumentServiceImpl
     public void getAllDocumentsAsList(Empty request, StreamObserver<DocumentResponseList> responseObserver) {
 
         List<DocumentDto> foundAllDocuments = documentService.findAllDocuments();
-        List<DocumentResponse> documentResponse = documentResponseMapper.mapFromDocumentList(foundAllDocuments);
+
+        Function<List<DocumentResponse>, DocumentResponseList> wrapDocResponse =
+            docResp -> DocumentResponseList.newBuilder()
+                                           .addAllDocumentResponse(docResp)
+                                           .build();
         DocumentResponseList response =
-            DocumentResponseList.newBuilder()
-                                .addAllDocumentResponse(documentResponse)
-                                .build();
+            foundAllDocuments.stream()
+                             .map(this::simulateHeavyOperation)
+                             .collect(Collectors.collectingAndThen(Collectors.toList(),
+                                 wrapDocResponse));
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();
