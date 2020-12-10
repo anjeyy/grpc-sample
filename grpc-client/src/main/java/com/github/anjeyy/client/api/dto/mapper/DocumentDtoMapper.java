@@ -13,6 +13,6 @@ public interface DocumentDtoMapper {
     @Mapping(target = "person", source = "person")
     DocumentDto mapFromGrpcDocumentResponse(DocumentResponse document);
 
-    
     List<DocumentDto> mapFromGrpcDocumentResponseList(List<DocumentResponse> document);
+
 }

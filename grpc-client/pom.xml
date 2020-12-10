@@ -13,6 +13,7 @@
 
 
   <dependencies>
+    <!-- gRPC-->
     <dependency>
       <groupId>com.github.anjeyy</groupId>
       <artifactId>grpc-proto</artifactId>
@@ -28,6 +29,11 @@
           <artifactId>grpc-netty-shaded</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <!-- Flux -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
     </dependency>
   </dependencies>
 

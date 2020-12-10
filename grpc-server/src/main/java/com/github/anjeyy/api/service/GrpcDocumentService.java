@@ -45,4 +45,24 @@ public class GrpcDocumentService extends DocumentServiceGrpc.DocumentServiceImpl
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void getAllDocuments(Empty request, StreamObserver<DocumentResponse> responseObserver) {
+        List<DocumentDto> foundAllDocuments = documentService.findAllDocuments();
+
+        foundAllDocuments.stream()
+                         .map(this::simulateHeavyOperation)
+                         .forEach(responseObserver::onNext);
+
+        responseObserver.onCompleted();
+    }
+
+    private DocumentResponse simulateHeavyOperation(DocumentDto documentDto) {
+        try {
+            Thread.sleep(1_000L);
+        } catch (InterruptedException e) {
+            throw new IllegalThreadStateException("A Thread was interupted: " + e);
+        }
+        return documentResponseMapper.mapFromDocument(documentDto);
+    }
 }
