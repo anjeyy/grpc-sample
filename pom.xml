@@ -73,7 +73,7 @@
     </dependency>
     <dependency>
       <groupId>net.devh</groupId>
-      <artifactId>grpc-client-spring-boot-starter</artifactId>
+      <artifactId>grpc-spring-boot-starter</artifactId>
       <version>${grpc.spring.version}</version>
       <exclusions>
         <exclusion>
@@ -149,7 +149,7 @@
 
   <build>
     <plugins>
-      <!--       Necessary for executable/deployable jar File -->
+      <!-- Necessary for executable/deployable jar File -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>

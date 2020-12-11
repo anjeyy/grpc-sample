@@ -13,9 +13,12 @@ management:
 spring:
   application:
     name: my-grpc-client
-    sleuth:
-      sampler:
-        probability: 1
+  sleuth:
+    sampler:
+      probability: 1.0
+  zipkin:
+    sender:
+      type: grpc
 
 grpc:
   client:
