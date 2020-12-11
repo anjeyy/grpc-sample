@@ -2,11 +2,13 @@ package com.github.anjeyy.api.service;
 
 import com.github.anjeyy.api.dto.mapper.DocumentResponseMapper;
 import com.github.anjeyy.api.dto.model.DocumentDto;
+import com.github.anjeyy.infrastructure.exception.ResourceNotFoundException;
 import com.github.anjeyy.proto.document.DocumentRequest;
 import com.github.anjeyy.proto.document.DocumentResponse;
 import com.github.anjeyy.proto.document.DocumentResponseList;
 import com.github.anjeyy.proto.document.DocumentServiceGrpc;
 import com.google.protobuf.Empty;
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import java.util.List;
 import java.util.UUID;
@@ -25,8 +27,19 @@ public class GrpcDocumentService extends DocumentServiceGrpc.DocumentServiceImpl
 
     @Override
     public void getDocumentById(DocumentRequest request, StreamObserver<DocumentResponse> responseObserver) {
-        final UUID id = UUID.fromString(request.getDocId());    //TODO handle illegalArgument
-        DocumentDto foundDocument = documentService.findDocumentById(id);   //TODO handle resource not found
+        DocumentDto foundDocument = null;
+        try {
+            final UUID id = UUID.fromString(request.getDocId());
+            foundDocument = documentService.findDocumentById(id);
+        } catch (ResourceNotFoundException e) {
+            Status status = Status.NOT_FOUND.withDescription(e.getMessage());
+            responseObserver.onError(status.asRuntimeException());
+            return;
+        } catch (IllegalArgumentException e) {
+            Status status = Status.INVALID_ARGUMENT.withDescription(e.getMessage());
+            responseObserver.onError(status.asRuntimeException());
+            return;
+        }
         DocumentResponse documentResponse = documentResponseMapper.mapFromDocument(foundDocument);
 
         responseObserver.onNext(documentResponse);
@@ -46,8 +59,7 @@ public class GrpcDocumentService extends DocumentServiceGrpc.DocumentServiceImpl
         DocumentResponseList response =
             foundAllDocuments.stream()
                              .map(this::simulateHeavyOperation)
-                             .collect(Collectors.collectingAndThen(Collectors.toList(),
-                                 wrapDocResponse));
+                             .collect(Collectors.collectingAndThen(Collectors.toList(), wrapDocResponse));
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();

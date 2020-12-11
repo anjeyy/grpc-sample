@@ -49,8 +49,12 @@ similarily.
 
 - On my way to exploring, understanding and implement a gRPC service 
 I encountered a very nice tool, similar to _postman_.
-  
     > [BloomRPC](https://github.com/uw-labs/bloomrpc)
   
 - A very nice introduction to gRPC with spring in Java and hands-on tutorial, 
 I'll recommend [grpc-java-example](https://codenotfound.com/grpc-java-example.html)
+  
+
+- For a first insight how to throw and handle errors with gRPC, 
+  this [resource](https://www.vinsguru.com/grpc-error-handling/) is helpful
+  
