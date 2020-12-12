@@ -1,4 +1,4 @@
-package com.github.anjeyy.api.annotation;
+package com.github.anjeyy.infrastructure.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -12,7 +12,8 @@ import java.lang.annotation.Target;
 public @interface GrpcExceptionHandler {
 
     /**
-     * Exceptions handled by the annotated method.
+     * Exceptions handled by the annotated method. If empty, will default to any
+     * exceptions listed in the method argument list.
      */
-    Class<? extends Throwable>[] value();
+    Class<? extends Throwable>[] value() default {};
 }

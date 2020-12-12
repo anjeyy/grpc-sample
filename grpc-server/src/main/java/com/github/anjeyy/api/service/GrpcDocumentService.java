@@ -25,22 +25,9 @@ public class GrpcDocumentService extends DocumentServiceGrpc.DocumentServiceImpl
 
     @Override
     public void getDocumentById(DocumentRequest request, StreamObserver<DocumentResponse> responseObserver) {
-        DocumentDto foundDocument = null;
-        // Simple, but cluttered up Error Handling with gRPC response Codes.
-//        try {
+        
         final UUID id = UUID.fromString(request.getDocId());
-        foundDocument = documentService.findDocumentById(id);
-//        }
-//        catch (ResourceNotFoundException e) {
-//            Status status = Status.NOT_FOUND.withDescription(e.getMessage());
-//            responseObserver.onError(status.asRuntimeException());
-//            return;
-//        }
-//        catch (IllegalArgumentException e) {
-//            Status status = Status.INVALID_ARGUMENT.withDescription(e.getMessage());
-//            responseObserver.onError(status.asRuntimeException());
-//            return;
-//        }
+        DocumentDto foundDocument = documentService.findDocumentById(id);
         DocumentResponse documentResponse = documentResponseMapper.mapFromDocument(foundDocument);
 
         responseObserver.onNext(documentResponse);
