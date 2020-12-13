@@ -12,16 +12,15 @@ public class GrpcExceptionAdvice {
 
     @GrpcExceptionHandler
     public Throwable handleIllegalArgumentException(IllegalArgumentException e) {
-        Status status = Status.INVALID_ARGUMENT.withDescription(e.getMessage());
+        Status status = Status.INVALID_ARGUMENT.withDescription(e.getMessage()).withCause(e);
 
         return status.asRuntimeException();
     }
 
-
     @GrpcExceptionHandler(ResourceNotFoundException.class)
     public Throwable handleResourceNotFoundException(ResourceNotFoundException e) {
-        Status status = Status.NOT_FOUND.withDescription(e.getMessage());
+        Status status = Status.NOT_FOUND.withDescription(e.getMessage()).withCause(e);
 
-        return status.asRuntimeException();
+        return status.asException();
     }
 }

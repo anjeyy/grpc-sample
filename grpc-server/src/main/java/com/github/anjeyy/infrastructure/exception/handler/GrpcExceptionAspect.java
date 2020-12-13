@@ -1,10 +1,12 @@
 package com.github.anjeyy.infrastructure.exception.handler;
 
 import com.github.anjeyy.infrastructure.annotation.GrpcServiceAdvice;
+import com.github.anjeyy.infrastructure.exception.MethodExecutionException;
 import io.grpc.stub.StreamObserver;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -50,9 +52,13 @@ public class GrpcExceptionAspect {
         pointcut = "grpcServiceAnnotatedPointcut() && implementedBindableServicePointcut()",
         throwing = "exception")
     public <E extends Throwable> void handleExceptionInsideGrpcService(JoinPoint joinPoint, E exception) {
-        log.error("Runtimeexception caught during gRPC service execution: ", exception);
+        log.error("Exception caught during gRPC service execution: ", exception);
         this.exception = exception;
 
+        boolean exceptionIsMapped = exceptionHandlerMethodResolver.isMethodMappedForException(exception.getClass());
+        if (!exceptionIsMapped) {
+            return;
+        }
         extractNecessaryInformation();
         Throwable throwable = invokeMappedMethodSafely();
         closeStreamObserverOnError(joinPoint.getArgs(), throwable);
@@ -82,7 +88,7 @@ public class GrpcExceptionAspect {
             Object statusThrowable = mappedMethod.invoke(instanceOfMappedMethod, instancedParams);
             return castToThrowable(statusThrowable);
         } catch (InvocationTargetException | IllegalAccessException e) {
-            throw new IllegalStateException("No mapped instance found for Exception " + exception);
+            throw new MethodExecutionException("Error during mapped exception method execution: ", e.getCause());
         }
     }
 
@@ -93,7 +99,7 @@ public class GrpcExceptionAspect {
 
         for (int i = 0; i < parameters.length; i++) {
             Class<?> parameterClass = convertToClass(parameters[i]);
-            if (parameterClass.equals(exception.getClass())) {
+            if (parameterClass.isAssignableFrom((exception.getClass()))) {
                 instancedParams[i] = exception;
                 break;
             }
@@ -102,11 +108,11 @@ public class GrpcExceptionAspect {
     }
 
     private Class<?> convertToClass(Parameter parameter) {
-        return Optional.of(parameter)
-                       .map(Parameter::getParameterizedType)
-                       .filter(type -> type instanceof Class)
-                       .map(type -> (Class<?>) type)
-                       .orElseThrow();
+        Type paramType = parameter.getParameterizedType();
+        if (paramType instanceof Class) {
+            return (Class<?>) paramType;
+        }
+        throw new IllegalStateException("Parametertype of method has to be from Class, it was: " + paramType);
     }
 
     private Throwable castToThrowable(Object statusThrowable) {
@@ -114,7 +120,7 @@ public class GrpcExceptionAspect {
                        .filter(thrbl -> thrbl instanceof Throwable)
                        .map(thrbl -> (Throwable) thrbl)
                        .orElseThrow(() -> new IllegalStateException(
-                           "Return type has to beo f type java.lang.Throable: " + statusThrowable));
+                           "Return type has to be of type java.lang.Throwable: " + statusThrowable));
     }
 
     private void closeStreamObserverOnError(Object[] joinPointParams, Throwable throwable) {
