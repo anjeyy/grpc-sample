@@ -7,56 +7,42 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 
+/**
+ * Given an annotated {@link GrpcServiceAdvice @GrpcServiceAdvice} class and annotated methods with
+ * {@link GrpcExceptionHandler @GrpcExceptionHandler}, {@link GrpcExceptionHandlerMethodResolver} resolves given
+ * exception type and maps it to the corresponding method to be executed, when this exception is being raised.<br>
+ * For an example how to make use of it, please have a look {@link GrpcExceptionHandler @GrpcExceptionHandler}.<br>
+ * <br>
+ *
+ * @author Andjelko Perisic (andjelko.perisic@gmail.com)
+ * @see GrpcServiceAdvice
+ * @see GrpcExceptionHandler
+ * @see GrpcServiceAdviceExceptionHandler
+ */
 @Slf4j
-@Configuration
-@RequiredArgsConstructor
-@ConditionalOnBean(annotation = GrpcServiceAdvice.class)
 public class GrpcExceptionHandlerMethodResolver implements InitializingBean {
 
     private final Map<Class<? extends Throwable>, Method> mappedMethods = new HashMap<>(16);
-    private final ApplicationContext applicationContext;
+
+    private final GrpcServiceAdviceDiscoverer grpcServiceAdviceDiscoverer;
 
     private Class<? extends Throwable>[] annotatedExceptions;
-    private Map<String, Object> annotatedBeans;
+
+    public GrpcExceptionHandlerMethodResolver(final GrpcServiceAdviceDiscoverer grpcServiceAdviceDiscoverer) {
+        this.grpcServiceAdviceDiscoverer = grpcServiceAdviceDiscoverer;
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Set<Class<?>> annotatedClasses = findAllAnnotatedClasses();
-        Set<Method> annotatedMethods = getAnnotatedMethods(annotatedClasses);
-
-        annotatedMethods.forEach(this::checkParamTypesAreAlignedToExceptionTypes);
+        grpcServiceAdviceDiscoverer.getAnnotatedMethods()
+                                   .forEach(this::extractAndMapExceptionToMethod);
     }
 
-    private Set<Class<?>> findAllAnnotatedClasses() {
-        annotatedBeans = applicationContext.getBeansWithAnnotation(GrpcServiceAdvice.class);
-        return annotatedBeans.values()
-                             .stream()
-                             .map(Object::getClass)
-                             .collect(Collectors.toSet());
-    }
-
-    private Set<Method> getAnnotatedMethods(Set<Class<?>> annotatedClasses) {
-        Function<Class<?>, Stream<Method>> extractMethodsFromClass = clazz -> Arrays.stream(clazz.getDeclaredMethods());
-        return annotatedClasses.stream()
-                               .flatMap(extractMethodsFromClass)
-                               .filter(method -> method.isAnnotationPresent(GrpcExceptionHandler.class))
-                               .collect(Collectors.toSet());
-    }
-
-
-    private void checkParamTypesAreAlignedToExceptionTypes(Method method) {
+    private void extractAndMapExceptionToMethod(Method method) {
 
         GrpcExceptionHandler annotation = method.getDeclaredAnnotation(GrpcExceptionHandler.class);
         Assert.notNull(annotation, "@GrpcExceptionHandler annotation not found.");
@@ -76,9 +62,21 @@ public class GrpcExceptionHandlerMethodResolver implements InitializingBean {
                 throw new IllegalStateException("Annotated Class is not of Type Throwable: " + methodParamType);
             }
         }
+        // safe to call, prior to the check above
         @SuppressWarnings("unchecked")
         Class<? extends Throwable>[] paramExceptionTypes = (Class<? extends Throwable>[]) methodParamTypes;
         return paramExceptionTypes;
+    }
+
+    private void addExceptionMapping(Class<? extends Throwable> exceptionType, Method method) {
+
+        parameterTypeIsAssignable(exceptionType);
+
+        Method oldMethod = mappedMethods.put(exceptionType, method);
+        if (oldMethod != null && !oldMethod.equals(method)) {
+            throw new IllegalStateException("Ambiguous @GrpcExceptionHandler method mapped for [" +
+                exceptionType + "]: {" + oldMethod + ", " + method + "}");
+        }
     }
 
     private void parameterTypeIsAssignable(Class<? extends Throwable> paramType) {
@@ -94,19 +92,7 @@ public class GrpcExceptionHandlerMethodResolver implements InitializingBean {
         }
         throw new IllegalStateException(
             String.format("Method parameter [%s] exception is NOT matching annotated Exception [%s].",
-                paramType, Arrays.toString(annotatedExceptions))
-        );
-    }
-
-    private void addExceptionMapping(Class<? extends Throwable> exceptionType, Method method) {
-
-        parameterTypeIsAssignable(exceptionType);
-
-        Method oldMethod = mappedMethods.put(exceptionType, method);
-        if (oldMethod != null && !oldMethod.equals(method)) {
-            throw new IllegalStateException("Ambiguous @GrpcExceptionHandler method mapped for [" +
-                exceptionType + "]: {" + oldMethod + ", " + method + "}");
-        }
+                paramType, Arrays.toString(annotatedExceptions)));
     }
 
 
@@ -118,11 +104,12 @@ public class GrpcExceptionHandlerMethodResolver implements InitializingBean {
         }
 
         Class<?> methodClass = value.getDeclaringClass();
-        Object key = annotatedBeans.values()
-                                   .stream()
-                                   .filter(obj -> methodClass.isAssignableFrom(obj.getClass()))
-                                   .findFirst()
-                                   .orElse(null);
+        Object key = grpcServiceAdviceDiscoverer.getAnnotatedBeans()
+                                                .values()
+                                                .stream()
+                                                .filter(obj -> methodClass.isAssignableFrom(obj.getClass()))
+                                                .findFirst()
+                                                .orElse(null);
         return new SimpleImmutableEntry<>(key, value);
     }
 

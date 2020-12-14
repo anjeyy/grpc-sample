@@ -11,10 +11,10 @@ public class GrpcExceptionAdvice {
 
 
     @GrpcExceptionHandler
-    public Throwable handleIllegalArgumentException(IllegalArgumentException e) {
+    public Status handleIllegalArgumentException(IllegalArgumentException e) {
         Status status = Status.INVALID_ARGUMENT.withDescription(e.getMessage()).withCause(e);
 
-        return status.asRuntimeException();
+        return status;
     }
 
     @GrpcExceptionHandler(ResourceNotFoundException.class)

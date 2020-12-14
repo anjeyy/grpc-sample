@@ -1,43 +1,47 @@
 package com.github.anjeyy.infrastructure.exception.handler;
 
-import com.github.anjeyy.infrastructure.annotation.GrpcServiceAdvice;
-import com.github.anjeyy.infrastructure.exception.MethodExecutionException;
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.devh.boot.grpc.server.service.GrpcService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.stereotype.Component;
 
 /**
- * Exception handling for thrown {@link RuntimeException} inside annotated CLasses with {@link
- * net.devh.boot.grpc.server.service.GrpcService @GrpcService}, which implement {@link io.grpc.BindableService}.
+ * As part of Spring AOP, when a thrown exception is caught inside annotated class
+ * {@link GrpcService @GrpcService}, which implements {@link io.grpc.BindableService},
+ * then this thrown exception is being handled. Specifically handled by {@link GrpcExceptionHandlerMethodResolver}
+ * where a mapping between exception and the in case to be executed method exists.
  * <p>
- * After calling the mapped Methods to the corresponding Exception, the returned {@link Throwable} is beeing send to the
- * {@link io.grpc.stub.StreamObserver#onError(Throwable)}.
+ * After calling the mapped Method, the returned {@link Throwable} is being send to the
+ * {@link StreamObserver#onError(Throwable)}. In case the return type is {@link Status} a conversion to
+ * {@link Status#asRuntimeException()} is made.
+ *
+ * @author Andjelko Perisic (andjelko.perisic@gmail.com)
+ * @see GrpcExceptionHandlerMethodResolver
  */
 @Slf4j
 @Aspect
-@Component
-@RequiredArgsConstructor
-@ConditionalOnBean(annotation = GrpcServiceAdvice.class)
-public class GrpcExceptionAspect {
+public class GrpcServiceAdviceExceptionHandler {
 
-    private final GrpcExceptionHandlerMethodResolver exceptionHandlerMethodResolver;
+    private final GrpcExceptionHandlerMethodResolver grpcExceptionHandlerMethodResolver;
 
     private Throwable exception;
     private Method mappedMethod;
     private Object instanceOfMappedMethod;
+
+    public GrpcServiceAdviceExceptionHandler(
+        final GrpcExceptionHandlerMethodResolver grpcExceptionHandlerMethodResolver) {
+        this.grpcExceptionHandlerMethodResolver = grpcExceptionHandlerMethodResolver;
+    }
 
 
     @Pointcut("within(@net.devh.boot.grpc.server.service.GrpcService *)")
@@ -51,14 +55,18 @@ public class GrpcExceptionAspect {
     @AfterThrowing(
         pointcut = "grpcServiceAnnotatedPointcut() && implementedBindableServicePointcut()",
         throwing = "exception")
-    public <E extends Throwable> void handleExceptionInsideGrpcService(JoinPoint joinPoint, E exception) {
+    public <E extends Throwable> void handleExceptionInsideGrpcService(
+        JoinPoint joinPoint, E exception) throws Throwable {
+
         log.error("Exception caught during gRPC service execution: ", exception);
         this.exception = exception;
 
-        boolean exceptionIsMapped = exceptionHandlerMethodResolver.isMethodMappedForException(exception.getClass());
+        boolean exceptionIsMapped =
+            grpcExceptionHandlerMethodResolver.isMethodMappedForException(exception.getClass());
         if (!exceptionIsMapped) {
             return;
         }
+
         extractNecessaryInformation();
         Throwable throwable = invokeMappedMethodSafely();
         closeStreamObserverOnError(joinPoint.getArgs(), throwable);
@@ -68,27 +76,27 @@ public class GrpcExceptionAspect {
 
         final Class<? extends Throwable> exceptionClass = exception.getClass();
 
-        Map.Entry<Object, Method> methodWithInstance =
-            exceptionHandlerMethodResolver.resolveMethodWithInstance(exceptionClass);
+        Entry<Object, Method> methodWithInstance =
+            grpcExceptionHandlerMethodResolver.resolveMethodWithInstance(exceptionClass);
         mappedMethod =
             Optional.of(methodWithInstance)
                     .map(Entry::getValue)
-                    .orElseThrow(
-                        () -> new IllegalStateException("No mapped method found for Exception " + exceptionClass));
+                    .orElseThrow(() -> new IllegalStateException(
+                        "No mapped method found for Exception " + exceptionClass));
         instanceOfMappedMethod =
             Optional.of(methodWithInstance)
                     .map(Entry::getKey)
-                    .orElseThrow(
-                        () -> new IllegalStateException(" No mapped instance found for Exception " + exceptionClass));
+                    .orElseThrow(() -> new IllegalStateException(
+                        " No mapped instance found for Exception " + exceptionClass));
     }
 
-    private Throwable invokeMappedMethodSafely() {
+    private Throwable invokeMappedMethodSafely() throws Throwable {
         try {
             Object[] instancedParams = determineInstancedParameters(mappedMethod);
             Object statusThrowable = mappedMethod.invoke(instanceOfMappedMethod, instancedParams);
             return castToThrowable(statusThrowable);
         } catch (InvocationTargetException | IllegalAccessException e) {
-            throw new MethodExecutionException("Error during mapped exception method execution: ", e.getCause());
+            throw e.getCause();
         }
     }
 
@@ -99,7 +107,7 @@ public class GrpcExceptionAspect {
 
         for (int i = 0; i < parameters.length; i++) {
             Class<?> parameterClass = convertToClass(parameters[i]);
-            if (parameterClass.isAssignableFrom((exception.getClass()))) {
+            if (parameterClass.isAssignableFrom(exception.getClass())) {
                 instancedParams[i] = exception;
                 break;
             }
@@ -116,6 +124,11 @@ public class GrpcExceptionAspect {
     }
 
     private Throwable castToThrowable(Object statusThrowable) {
+
+        if (statusThrowable instanceof Status) {
+            Status statusToBeWrapped = (Status) statusThrowable;
+            return statusToBeWrapped.asRuntimeException();
+        }
         return Optional.of(statusThrowable)
                        .filter(thrbl -> thrbl instanceof Throwable)
                        .map(thrbl -> (Throwable) thrbl)
