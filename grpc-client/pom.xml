@@ -2,13 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>com.github.anjeyy</groupId>
     <artifactId>grpc-sample</artifactId>
     <version>${revision}</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
-
   <artifactId>grpc-client</artifactId>
 
 
@@ -30,6 +31,19 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <!-- sleuth logging-->
+    <dependency>
+      <groupId>io.zipkin.brave</groupId>
+      <artifactId>brave-instrumentation-grpc</artifactId>
+      <version>${io.zipkin.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-sleuth</artifactId>
+      <version>${spring.sleuth.version}</version>
+    </dependency>
+
     <!-- Flux -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
