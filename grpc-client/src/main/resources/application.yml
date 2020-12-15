@@ -10,13 +10,14 @@ management:
     health:
       show-details: always
 
+
 spring:
   application:
     name: my-grpc-client
-    sleuth:
-      sampler:
-        probability: 1
 
+
+# how to set dynamic addresses
+# https://yidongnan.github.io/grpc-spring-boot-starter/en/client/configuration.html
 grpc:
   client:
     hello-service:
@@ -25,3 +26,5 @@ grpc:
     document-service:
       address: static://localhost:9090
       negotiationType: plaintext
+  server:
+    port: -1
