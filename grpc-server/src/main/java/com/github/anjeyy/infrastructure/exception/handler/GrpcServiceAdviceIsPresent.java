@@ -17,7 +17,7 @@
 
 package com.github.anjeyy.infrastructure.exception.handler;
 
-import com.github.anjeyy.infrastructure.annotation.GrpcServiceAdvice;
+import com.github.anjeyy.infrastructure.annotation.GrpcAdvice;
 import java.util.Objects;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.ConditionContext;
@@ -25,12 +25,12 @@ import org.springframework.context.annotation.ConfigurationCondition;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
- * Condition to check if {@link GrpcServiceAdvice @GrpcServiceAdvice} is present. Mainly checking if
- * {@link GrpcServiceAdviceDiscoverer} should be a instantiated.<br>
+ * Condition to check if {@link GrpcAdvice @GrpcServiceAdvice} is present. Mainly checking if
+ * {@link GrpcAdviceDiscoverer} should be a instantiated.<br>
  * <br>
  *
  * @author Andjelko Perisic (andjelko.perisic@gmail.com)
- * @see GrpcServiceAdviceDiscoverer
+ * @see GrpcAdviceDiscoverer
  */
 public class GrpcServiceAdviceIsPresent implements ConfigurationCondition {
 
@@ -44,6 +44,6 @@ public class GrpcServiceAdviceIsPresent implements ConfigurationCondition {
 
         ConfigurableListableBeanFactory safeBeanFactory =
             Objects.requireNonNull(context.getBeanFactory(), "ConfigurableListableBeanFactory is null");
-        return !safeBeanFactory.getBeansWithAnnotation(GrpcServiceAdvice.class).isEmpty();
+        return !safeBeanFactory.getBeansWithAnnotation(GrpcAdvice.class).isEmpty();
     }
 }

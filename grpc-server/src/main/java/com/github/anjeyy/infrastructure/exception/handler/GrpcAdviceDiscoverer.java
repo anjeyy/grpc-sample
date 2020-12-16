@@ -1,7 +1,7 @@
 package com.github.anjeyy.infrastructure.exception.handler;
 
+import com.github.anjeyy.infrastructure.annotation.GrpcAdvice;
 import com.github.anjeyy.infrastructure.annotation.GrpcExceptionHandler;
-import com.github.anjeyy.infrastructure.annotation.GrpcServiceAdvice;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
@@ -15,16 +15,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * A discovery class to find all Beans annotated with {@link GrpcServiceAdvice @GrpcServiceAdvice} and for all found
- * beans a second search is performed looking for methods with {@link GrpcExceptionHandler @GrpcExceptionHandler}.<br>
- * <br>
+ * A discovery class to find all Beans annotated with {@link GrpcAdvice @GrpcAdvice} and for all found beans a second
+ * search is performed looking for methods with {@link GrpcExceptionHandler @GrpcExceptionHandler}.<br>
+ * <p>
  *
  * @author Andjelko Perisic (andjelko.perisic@gmail.com)
- * @see GrpcServiceAdvice
+ * @see GrpcAdvice
  * @see GrpcExceptionHandler
  */
 @Slf4j
-public class GrpcServiceAdviceDiscoverer implements InitializingBean, ApplicationContextAware {
+public class GrpcAdviceDiscoverer implements InitializingBean, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
     private Map<String, Object> annotatedBeans;
@@ -44,7 +44,7 @@ public class GrpcServiceAdviceDiscoverer implements InitializingBean, Applicatio
     @Override
     public void afterPropertiesSet() throws Exception {
 
-        annotatedBeans = applicationContext.getBeansWithAnnotation(GrpcServiceAdvice.class);
+        annotatedBeans = applicationContext.getBeansWithAnnotation(GrpcAdvice.class);
         annotatedClasses = findAllAnnotatedClasses();
         annotatedMethods = getAnnotatedMethods(annotatedClasses);
     }
