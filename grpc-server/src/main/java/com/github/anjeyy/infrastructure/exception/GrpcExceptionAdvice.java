@@ -1,12 +1,12 @@
 package com.github.anjeyy.infrastructure.exception;
 
+import com.github.anjeyy.infrastructure.annotation.GrpcAdvice;
 import com.github.anjeyy.infrastructure.annotation.GrpcExceptionHandler;
-import com.github.anjeyy.infrastructure.annotation.GrpcServiceAdvice;
 import io.grpc.Status;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@GrpcServiceAdvice
+@GrpcAdvice
 public class GrpcExceptionAdvice {
 
 
@@ -23,4 +23,5 @@ public class GrpcExceptionAdvice {
 
         return status.asException();
     }
+
 }
