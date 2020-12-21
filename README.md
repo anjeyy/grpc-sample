@@ -39,9 +39,6 @@ _Hint:_ There is no official `grpc-spring-boot-starter` supported by the
 team.
 <br>
 
-### Exception Handling
-> TODO ...
-
 ## Client
 
 As already mentioned in section [server](#server), client side implementation was done
