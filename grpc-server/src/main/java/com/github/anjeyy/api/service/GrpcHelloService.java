@@ -4,11 +4,9 @@ import com.github.anjeyy.proto.simple.HelloRequest;
 import com.github.anjeyy.proto.simple.HelloResponse;
 import com.github.anjeyy.proto.simple.HelloServiceGrpc;
 import io.grpc.stub.StreamObserver;
-import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 
 @GrpcService
-@RequiredArgsConstructor
 public class GrpcHelloService extends HelloServiceGrpc.HelloServiceImplBase {
 
     @Override
