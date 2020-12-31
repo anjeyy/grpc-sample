@@ -23,4 +23,5 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: anjeyy/unbendable
+          tags: user/app:latest
           tag_with_ref: true
