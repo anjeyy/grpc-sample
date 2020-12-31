@@ -11,8 +11,6 @@ then have the same reference compiling `.proto` files.
 
 > please have a look at [gRPC](https://grpc.io/) for further information
 
-<br>
-
 ## Modules
 
 Following listing of submodules are beeing used in this project.
