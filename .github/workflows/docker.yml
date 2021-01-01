@@ -29,8 +29,8 @@ jobs:
       - name: Build & Push [Client] to Docker Hub
         uses: docker/build-push-action@v2
         with:
-          context: .
-          file: ./grpc-client/Dockerfile
+          context: ./grpc-client
+          file: ./Dockerfile
           tags: anjeyy/unbendable:grpc-sample-client-latest
           pull: true
           push: true
@@ -40,8 +40,8 @@ jobs:
       - name: Build & Push [Server] to Docker Hub
         uses: docker/build-push-action@v2
         with:
-          context: .
-          file: ./grpc-server/Dockerfile
+          context: ./grpc-server
+          file: ./Dockerfile
           tags: anjeyy/unbendable:grpc-sample-server-latest
           pull: true
           push: true
