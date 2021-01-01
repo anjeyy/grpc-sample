@@ -30,7 +30,6 @@ jobs:
       - run: cp ./grpc-client/target/grpc-client*.jar path/to/artifact
       - run: cp ./grpc-server/target/grpc-server*.jar path/to/artifact
       - run: ls -la path/to/artifact
-      #      - run: echo hello > path/to/artifact/world.txt
       - uses: actions/upload-artifact@master
         with:
           name: my-artifact
@@ -53,6 +52,16 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - run: mkdir -p target
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: my-artifact
+          path: path/to/artifact
+      - run: ls -la path/to/artifact/
+      - run: cp path/to/artifact/* target
+      - run: ls -la target
 
       - name: Build & Push [Client] to Docker Hub
         uses: docker/build-push-action@v2
