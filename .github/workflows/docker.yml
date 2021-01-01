@@ -27,7 +27,9 @@ jobs:
 
       # save artifacts
       - run: mkdir -p path/to/artifact
-      - run: echo $(pwd)
+      - run: cp ./grpc-client/target/grpc-client*.jar path/to/artifact
+      - run: cp ./grpc-server/target/grpc-server*.jar path/to/artifact
+      - run: ls -la path/to/artifact
       #      - run: echo hello > path/to/artifact/world.txt
       - uses: actions/upload-artifact@master
         with:
