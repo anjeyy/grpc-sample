@@ -3,6 +3,7 @@ package com.github.anjeyy.infrastructure.exception;
 import com.github.anjeyy.infrastructure.annotation.GrpcAdvice;
 import com.github.anjeyy.infrastructure.annotation.GrpcExceptionHandler;
 import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -18,10 +19,10 @@ public class GrpcExceptionAdvice {
     }
 
     @GrpcExceptionHandler(ResourceNotFoundException.class)
-    public Throwable handleResourceNotFoundException(ResourceNotFoundException e) {
+    public StatusRuntimeException handleResourceNotFoundException(ResourceNotFoundException e) {
         Status status = Status.NOT_FOUND.withDescription(e.getMessage()).withCause(e);
 
-        return status.asException();
+        return status.asRuntimeException();
     }
 
 }
