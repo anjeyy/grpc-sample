@@ -55,4 +55,8 @@ I'll recommend [grpc-java-example](https://codenotfound.com/grpc-java-example.ht
 
 - For a first insight how to throw and handle errors with gRPC, 
   this [resource](https://www.vinsguru.com/grpc-error-handling/) is helpful
+<br>
   
+## kubernetes (& gRPC)
+
+> TODO - describe interaction and how to run
