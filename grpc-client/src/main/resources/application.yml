@@ -18,6 +18,7 @@ spring:
 
 # how to set dynamic addresses
 # https://yidongnan.github.io/grpc-spring-boot-starter/en/client/configuration.html
+# TODO change to work with kubernetes
 grpc:
   client:
     hello-service:
