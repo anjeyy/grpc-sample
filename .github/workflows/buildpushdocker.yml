@@ -1,9 +1,5 @@
 name: Publish Docker images
 on:
-  # TODO clean up file and split approrpiately
-  #  uncomment after workflow is working
-  #  release:
-  #    types: [ published ]
   push:
     branches: [ main ]
   pull_request:
@@ -29,10 +25,10 @@ jobs:
         run: mvn --batch-mode --update-snapshots verify
 
       # save artifacts for other jobs
-      - run: mkdir -p path/to/artifact
-      - run: cp ./grpc-client/target/grpc-client*.jar path/to/artifact
-      - run: cp ./grpc-server/target/grpc-server*.jar path/to/artifact
-      - run: ls -la path/to/artifact
+      - run: |
+          mkdir -p path/to/artifact
+          cp ./grpc-client/target/grpc-client*.jar path/to/artifact
+          cp ./grpc-server/target/grpc-server*.jar path/to/artifact
       - uses: actions/upload-artifact@master
         with:
           name: my-artifact
@@ -43,6 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build_jar
+    if: github.event.pull_request.merged == true
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
