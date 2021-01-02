@@ -1,8 +1,6 @@
 grpc:
   client:
     hello-service:
-      address: dns:///grpc-server:1234
+      address: dns:///grpc-server
     document-service:
       address: dns:///grpc-server:1234
-  server:
-    port: -1

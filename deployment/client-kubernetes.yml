@@ -2,17 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: grpc-simple-app
+    app: grpc-client
   name: grpc-client
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: grpc-simple-app
+      app: grpc-client
   template:
     metadata:
       labels:
-        app: grpc-simple-app
+        app: grpc-client
     spec:
       containers:
         - name: grpc-client
@@ -25,15 +25,16 @@ spec:
               value: kubernetes
             - name: GRPC_SERVER_PORT
               value: '-1'
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: grpc-client
-spec:
-  selector:
-    app: grpc-simple-app
-  type: LoadBalancer
-  ports:
-    - port: 8088
-
+#---
+# TODO via config not working
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: grpc-client
+#spec:
+#  selector:
+#    app: grpc-client
+#  type: LoadBalancer
+#  ports:
+#    - port: 7070
+#      targetPort: rest

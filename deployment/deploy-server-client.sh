@@ -18,6 +18,10 @@ function prettyPrint() {
   echo ""
 }
 
+function waitPrint() {
+  echo "~~~ $1 "
+}
+
 function deployServer() {
   cd "$SCRIPT_DIR"
   kubectl apply -f server-kubernetes.yml
@@ -27,6 +31,9 @@ function deployServer() {
 function deployClient() {
   cd "$SCRIPT_DIR"
   kubectl apply -f client-kubernetes.yml
+  waitPrint "Expose client as service..."
+  sleep 5s
+  kubectl expose deployment grpc-client --type=LoadBalancer --name=grpc-client
   prettyPrint "Client component deployment executed"
 }
 
@@ -35,6 +42,7 @@ function deployClient() {
 ############
 
 deployServer
-#deployClient
+waitPrint "Deploying client..."
 sleep 5s
+deployClient
 prettyPrint "Kubernetes deployment executed.."
