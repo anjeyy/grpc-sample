@@ -31,13 +31,15 @@ jobs:
           mkdir -p path/to/artifact
           cp ./grpc-client/target/grpc-client*.jar path/to/artifact
           cp ./grpc-server/target/grpc-server*.jar path/to/artifact
-          
+          ls -la path/to/artifact
+
       - name: Upload saved artifacts
         uses: actions/upload-artifact@v2
         with:
           name: my-artifact
           path: path/to/artifact
           retention-days: 1
+          if-no-files-found: error
 
   push_to_registry:
     name: Build & Push Docker image to Docker Hub
@@ -89,7 +91,7 @@ jobs:
           tags: anjeyy/unbendable:grpc-sample-server-latest
           pull: true
           push: true
-          cashed: false
+          no-cashe: true
           build-args: |
             arg1=value1
             arg2=value2
