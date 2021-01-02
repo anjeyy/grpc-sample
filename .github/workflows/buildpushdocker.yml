@@ -71,27 +71,28 @@ jobs:
         run: |
           mkdir -p target
           cp path/to/artifact/* target
+          ls -la target
+
+      - name: Debug
+        run: |
+          ls -la .
 
       - name: Build & Push [Client] to Docker Hub
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: ./grpc-client
           file: ./grpc-client/Dockerfile
           tags: anjeyy/unbendable:grpc-sample-client-latest
           pull: true
           push: true
-          build-args: |
-            arg1=value1
-            arg2=value2
+          no-cache: true
+
       - name: Build & Push [Server] to Docker Hub
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: ./grpc-server
           file: ./grpc-server/Dockerfile
           tags: anjeyy/unbendable:grpc-sample-server-latest
           pull: true
           push: true
-          no-cashe: true
-          build-args: |
-            arg1=value1
-            arg2=value2
+          no-cache: true
