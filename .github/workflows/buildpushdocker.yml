@@ -4,6 +4,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+    types: [ opened, synchronize, reopened, closed ]
 
 jobs:
   build-jar:
@@ -49,7 +50,7 @@ jobs:
     needs:
       - build-jar
 
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -91,7 +92,7 @@ jobs:
     needs:
       - build-jar
 
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
