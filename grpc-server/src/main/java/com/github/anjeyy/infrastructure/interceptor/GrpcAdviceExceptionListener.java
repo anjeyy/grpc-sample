@@ -85,8 +85,8 @@ public class GrpcAdviceExceptionListener<ReqT, RespT> extends SimpleForwardingSe
     }
 
     private void handleThrownExceptionByImplementation(Throwable throwable) {
-        serverCall.close(Status.INTERNAL.withCause(throwable)
-                                        .withDescription(throwable.getMessage()), new Metadata());
+        Status defaultStatus = Status.INTERNAL.withDescription(throwable.getMessage()).withCause(throwable);
+        serverCall.close(defaultStatus, new Metadata());
     }
 
 }

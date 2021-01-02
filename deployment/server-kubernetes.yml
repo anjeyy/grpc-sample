@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: grpc-server
+  name: grpc-server
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: grpc-server
+  template:
+    metadata:
+      labels:
+        app: grpc-server
+    spec:
+      containers:
+        - name: grpc-server
+          image: anjeyy/unbendable:grpc-sample-server-latest
+          ports:
+            - name: grpc
+              containerPort: 9090
+            - name: rest
+              containerPort: 8080
+          env:
+            - name: GRPC_SERVER_PORT
+              value: '9090'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grpc-server
+spec:
+  selector:
+    app: grpc-server
+  ports:
+    - name: grpclb
+      port: 1234 # Remember this port number, unless you use DNS-SVC-Lookups
+      targetPort: grpc
+  type: LoadBalancer
