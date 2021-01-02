@@ -38,7 +38,6 @@ public class GrpcAdviceConfig {
         return new GrpcExceptionHandlerMethodResolver(grpcAdviceDiscoverer);
     }
 
-    //TODO - here
     @Bean
     GrpcAdviceExceptionHandler grpcServiceAdviceExceptionHandler(
         GrpcExceptionHandlerMethodResolver grpcExceptionHandlerMethodResolver) {
@@ -51,9 +50,5 @@ public class GrpcAdviceConfig {
         GrpcAdviceExceptionHandler grpcAdviceExceptionHandler) {
         return new GrpcAdviceExceptionInterceptor(grpcAdviceExceptionHandler);
     }
-
-    //TODO add interceptors
-
-    //TODO run apply checks
 
 }
