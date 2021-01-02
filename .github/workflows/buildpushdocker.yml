@@ -26,11 +26,14 @@ jobs:
         run: mvn --batch-mode --update-snapshots verify
 
       # save artifacts for other jobs
-      - run: |
+      - name: Save artifacts for other jobs
+        run: |
           mkdir -p path/to/artifact
           cp ./grpc-client/target/grpc-client*.jar path/to/artifact
           cp ./grpc-server/target/grpc-server*.jar path/to/artifact
-      - uses: actions/upload-artifact@v2
+          
+      - name: Upload saved artifacts
+        uses: actions/upload-artifact@v2
         with:
           name: my-artifact
           path: path/to/artifact
@@ -56,13 +59,16 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - run: mkdir -p target
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
           name: my-artifact
           path: path/to/artifact
-      - run: cp path/to/artifact/* target
+
+      - name: Create directory for artifacts
+        run: |
+          mkdir -p target
+          cp path/to/artifact/* target
 
       - name: Build & Push [Client] to Docker Hub
         uses: docker/build-push-action@v2
@@ -83,6 +89,7 @@ jobs:
           tags: anjeyy/unbendable:grpc-sample-server-latest
           pull: true
           push: true
+          cashed: false
           build-args: |
             arg1=value1
             arg2=value2
