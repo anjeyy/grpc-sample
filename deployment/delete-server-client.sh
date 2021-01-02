@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# exit script on failure
-set -e
-
 ############
 ### VARS ###
 ############
@@ -19,7 +16,7 @@ function prettyPrint() {
 }
 
 function deleteServiceAndDeployment() {
-  cd "$SCRIPT_DIR"
+  cd "$SCRIPT_DIR" || exit
   kubectl delete services "$1"
   kubectl delete deployments "$1"
   prettyPrint "[$1] component removed"
