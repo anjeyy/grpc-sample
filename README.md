@@ -59,4 +59,13 @@ I'll recommend [grpc-java-example](https://codenotfound.com/grpc-java-example.ht
   
 ## kubernetes (& gRPC)
 
-> TODO - describe interaction and how to run
+For a detailed setup with gRPC and kubernetes, have a look at [gRPC kubernetes setup](https://yidongnan.github.io/grpc-spring-boot-starter/en/kubernetes.html).
+If you have a running kubernetes cluster, with some finetuning the 
+current _deployment_ (under root directory) works for the _server-_ & _clientside_.
+
+- server
+  - exposed with loadbalancer (directly callable)
+  
+- client
+  - exposed with loadbalancer
+  - calls server via dynamic _grpclb_ (see link above)
