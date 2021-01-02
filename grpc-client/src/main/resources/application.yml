@@ -10,15 +10,11 @@ management:
     health:
       show-details: always
 
-
 spring:
   application:
     name: my-grpc-client
 
 
-# how to set dynamic addresses
-# https://yidongnan.github.io/grpc-spring-boot-starter/en/client/configuration.html
-# TODO change to work with kubernetes
 grpc:
   client:
     hello-service:
