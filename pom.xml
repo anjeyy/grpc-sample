@@ -16,7 +16,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.3.7.RELEASE</version>
+    <version>2.6.13</version>
   </parent>
   <modules>
     <module>grpc-server</module>
@@ -27,24 +27,24 @@
   <properties>
     <revision>0.01.0</revision>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>11</java.version>
+    <java.version>17</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
-    <spring.boot.version>2.3.7.RELEASE</spring.boot.version>
+    <spring.boot.version>2.6.13</spring.boot.version>
     <!--
         *** WARNING *** needs to be the same version
         as 'grpc-client-spring-boot-starter' is using
     -->
-    <grpc.version>1.31.1</grpc.version>
-    <grpc.spring.version>2.10.1.RELEASE</grpc.spring.version>
-    <mapstruct.version>1.4.1.Final</mapstruct.version>
+    <grpc.version>1.51.0</grpc.version>
+    <grpc.spring.version>2.14.0.RELEASE</grpc.spring.version>
+    <mapstruct.version>1.5.3.Final</mapstruct.version>
     <io.zipkin.version>5.12.4</io.zipkin.version>
-    <spring.sleuth.version>2.2.4.RELEASE</spring.sleuth.version>
+    <spring.sleuth.version>3.1.0</spring.sleuth.version>
 
-    <lombok.version>1.18.16</lombok.version>
-    <junit5.version>5.6.3</junit5.version>
-    <mockito.version>3.6.28</mockito.version>
+    <lombok.version>1.18.24</lombok.version>
+    <junit5.version>5.9.0</junit5.version>
+    <mockito.version>4.9.0</mockito.version>
 
     <!-- build -->
     <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>

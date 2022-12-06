@@ -1,20 +1,11 @@
 package com.github.anjeyy.api.controller;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.anjeyy.api.dto.model.DocumentDto;
 import com.github.anjeyy.api.service.DocumentService;
-import com.github.anjeyy.infrastructure.exception.GlobalExceptionHandler;
+import com.github.anjeyy.infrastructure.config.GlobalRestAdvice;
 import com.github.anjeyy.infrastructure.exception.ResourceNotFoundException;
 import com.github.anjeyy.util.TestdataSupplier;
-import java.util.Collections;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +16,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Collections;
+import java.util.UUID;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class DocumentControllerTest {
@@ -41,7 +42,7 @@ class DocumentControllerTest {
     @BeforeEach
     void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(uut)
-                                 .setControllerAdvice(new GlobalExceptionHandler())
+                                 .setControllerAdvice(new GlobalRestAdvice())
                                  .build();
 
         objectMapper = new ObjectMapper();

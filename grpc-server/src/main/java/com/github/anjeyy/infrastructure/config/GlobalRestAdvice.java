@@ -1,6 +1,6 @@
-package com.github.anjeyy.infrastructure.exception;
+package com.github.anjeyy.infrastructure.config;
 
-import java.util.Optional;
+import com.github.anjeyy.infrastructure.exception.ResourceNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.http.HttpStatus;
@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.util.Optional;
+
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalRestAdvice {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException e) {
