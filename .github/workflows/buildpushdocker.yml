@@ -32,6 +32,8 @@ jobs:
   build-jar:
     name: Test & build artifacts
     runs-on: ubuntu-latest
+    needs:
+      - check-formatting
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
