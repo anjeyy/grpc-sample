@@ -25,7 +25,7 @@
   </modules>
 
   <properties>
-    <revision>0.01.0</revision>
+    <revision>0.02.0</revision>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>17</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -44,7 +44,7 @@
 
     <lombok.version>1.18.24</lombok.version>
     <junit5.version>5.9.0</junit5.version>
-    <mockito.version>4.9.0</mockito.version>
+    <mockito.version>4.8.0</mockito.version>
 
     <!-- build -->
     <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
@@ -154,6 +154,11 @@
       <artifactId>mockito-core</artifactId>
       <version>${mockito.version}</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy</artifactId>
+      <version>1.12.19</version>
     </dependency>
   </dependencies>
 
