@@ -29,11 +29,12 @@ class DocumentRepositoryIntTest {
         List<Document> result = uut.findAll();
 
         // verify
-        Assertions.assertThat(result)
-                  .isNotEmpty()
-                  .hasSize(2)
-                  .usingRecursiveComparison()
-                  .isEqualTo(createExpectedDocument());
+        Assertions
+            .assertThat(result)
+            .isNotEmpty()
+            .hasSize(2)
+            .usingRecursiveComparison()
+            .isEqualTo(createExpectedDocument());
     }
 
     // ###################

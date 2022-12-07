@@ -12,5 +12,4 @@ public class DocumentDto {
     String title;
     String person;
     int filesize;
-
 }

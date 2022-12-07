@@ -24,5 +24,4 @@ public class Document {
 
     @Column(nullable = false)
     private int filesize;
-
 }

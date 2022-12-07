@@ -15,20 +15,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<String> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         String errMsg = unwrapNestedException(e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                             .body(errMsg);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errMsg);
     }
 
     @ExceptionHandler(StatusRuntimeException.class)
     public ResponseEntity<String> handleConstraintViolationException(StatusRuntimeException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                             .body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
     private <E extends NestedRuntimeException> String unwrapNestedException(E exception) {
-        return Optional.of(exception)
-                       .map(NestedRuntimeException::getRootCause)
-                       .map(Throwable::getMessage)
-                       .orElseGet(exception::getMessage);
+        return Optional
+            .of(exception)
+            .map(NestedRuntimeException::getRootCause)
+            .map(Throwable::getMessage)
+            .orElseGet(exception::getMessage);
     }
 }
