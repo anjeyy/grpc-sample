@@ -47,7 +47,7 @@
     <mockito.version>4.9.0</mockito.version>
 
     <!-- build -->
-    <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
+    <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
     <lombok.mapstruct.binding.version>0.2.0</lombok.mapstruct.binding.version>
     <jacoco.maven.plugin.version>0.8.6</jacoco.maven.plugin.version>
   </properties>
