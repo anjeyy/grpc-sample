@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.anjeyy.api.dto.model.DocumentDto;
 import com.github.anjeyy.api.service.DocumentService;
-import com.github.anjeyy.infrastructure.exception.GlobalExceptionHandler;
+import com.github.anjeyy.infrastructure.config.GlobalRestAdvice;
 import com.github.anjeyy.infrastructure.exception.ResourceNotFoundException;
 import com.github.anjeyy.util.TestdataSupplier;
 import java.util.Collections;
@@ -40,9 +40,7 @@ class DocumentControllerTest {
 
     @BeforeEach
     void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(uut)
-                                 .setControllerAdvice(new GlobalExceptionHandler())
-                                 .build();
+        mockMvc = MockMvcBuilders.standaloneSetup(uut).setControllerAdvice(new GlobalRestAdvice()).build();
 
         objectMapper = new ObjectMapper();
     }
@@ -57,9 +55,10 @@ class DocumentControllerTest {
         given(documentService.findAllDocuments()).willReturn(Collections.singletonList(mockedResult));
 
         // verify
-        mockMvc.perform(MockMvcRequestBuilders.get("/documents"))
-               .andExpect(status().isOk())
-               .andExpect(content().string(objectMapper.writeValueAsString(Collections.singletonList(mockedResult))));
+        mockMvc
+            .perform(MockMvcRequestBuilders.get("/documents"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(objectMapper.writeValueAsString(Collections.singletonList(mockedResult))));
         verify(documentService, times(1)).findAllDocuments();
         verify(documentService, never()).findDocumentById(randomId);
     }
@@ -68,20 +67,22 @@ class DocumentControllerTest {
     void getSingleDocuments_successfulCall() throws Exception {
         // prepare
         UUID randomId = UUID.randomUUID();
-        DocumentDto mockedResult = DocumentDto.builder()
-                                              .docid(randomId)
-                                              .title("JUnit Test")
-                                              .person("Andjelko")
-                                              .filesize(1024)
-                                              .build();
+        DocumentDto mockedResult = DocumentDto
+            .builder()
+            .docid(randomId)
+            .title("JUnit Test")
+            .person("Andjelko")
+            .filesize(1024)
+            .build();
 
         // execute
         given(documentService.findDocumentById(randomId)).willReturn(mockedResult);
 
         // verify
-        mockMvc.perform(MockMvcRequestBuilders.get("/documents/" + randomId.toString()))
-               .andExpect(status().isOk())
-               .andExpect(content().string(objectMapper.writeValueAsString(mockedResult)));
+        mockMvc
+            .perform(MockMvcRequestBuilders.get("/documents/" + randomId.toString()))
+            .andExpect(status().isOk())
+            .andExpect(content().string(objectMapper.writeValueAsString(mockedResult)));
         verify(documentService, times(1)).findDocumentById(randomId);
         verify(documentService, never()).findAllDocuments();
     }
@@ -90,12 +91,15 @@ class DocumentControllerTest {
     void expectGlobalJdbiCustomExceptionHandling_whenErrorThrown() throws Exception {
         // prepare
         UUID randomId = UUID.randomUUID();
-        BDDMockito.willThrow(new ResourceNotFoundException("Simulate SQL Error"))
-                  .given(documentService).findDocumentById(randomId);
+        BDDMockito
+            .willThrow(new ResourceNotFoundException("Simulate SQL Error"))
+            .given(documentService)
+            .findDocumentById(randomId);
 
         // execute & verify
-        mockMvc.perform(MockMvcRequestBuilders.get("/documents/" + randomId.toString()))
-               .andExpect(status().isNotFound())
-               .andExpect(content().string("Simulate SQL Error"));
+        mockMvc
+            .perform(MockMvcRequestBuilders.get("/documents/" + randomId.toString()))
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Simulate SQL Error"));
     }
 }

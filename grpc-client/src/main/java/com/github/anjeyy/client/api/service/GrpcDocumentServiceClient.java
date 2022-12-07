@@ -20,7 +20,6 @@ public class GrpcDocumentServiceClient {
     @GrpcClient("document-service")
     private DocumentServiceGrpc.DocumentServiceBlockingStub documentServiceBlockingStub;
 
-
     public DocumentResponse getDocumentsWithId(UUID id) {
         DocumentRequest request = DocumentRequest.newBuilder().setDocId(id.toString()).build();
         log.info("Document requesting: " + request);
@@ -38,7 +37,6 @@ public class GrpcDocumentServiceClient {
         log.info("All documents received: " + response);
         return response;
     }
-
 
     public Iterator<DocumentResponse> getAllDocumentsAsIterator() {
         Empty request = Empty.newBuilder().build();
@@ -62,6 +60,4 @@ public class GrpcDocumentServiceClient {
         documentServiceBlockingStub.getAllDocuments(request).forEachRemaining(fluxSink::next);
         fluxSink.complete();
     }
-
-
 }

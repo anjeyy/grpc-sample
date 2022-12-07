@@ -14,7 +14,6 @@ public class GrpcHelloServiceClient {
     @GrpcClient("hello-service")
     private HelloServiceGrpc.HelloServiceBlockingStub helloServiceBlockingStub;
 
-
     public String sayHello() {
         HelloRequest request = HelloRequest.newBuilder().setFirstName("Andjelko").setLastName("Perisic").build();
         log.info("Client request: " + request);

@@ -16,8 +16,8 @@ public class LogGrpcInterceptor implements ServerInterceptor {
     public <ReqT, RespT> Listener<ReqT> interceptCall(
         ServerCall<ReqT, RespT> serverCall,
         Metadata headers,
-        ServerCallHandler<ReqT, RespT> next) {
-
+        ServerCallHandler<ReqT, RespT> next
+    ) {
         log.info("Methoddescription: {}", serverCall.getMethodDescriptor().getFullMethodName());
         return next.startCall(serverCall, headers);
     }

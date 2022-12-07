@@ -15,7 +15,7 @@
     <!-- gRPC generation -->
     <os.maven.version>1.6.2</os.maven.version>
     <google.protoc.version>3.14.0</google.protoc.version>
-    <io.grpc.version>1.34.0</io.grpc.version>
+    <io.grpc.version>1.51.0</io.grpc.version>
     <protobuf.maven.version>0.6.1</protobuf.maven.version>
   </properties>
 

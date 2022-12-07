@@ -13,7 +13,6 @@ class DocumentDtoMapperTest {
 
     private final DocumentDtoMapper uut = new DocumentDtoMapperImpl();
 
-
     @Test
     void map_validDocument_returnsValidDocumentDto() {
         // prepare - given
@@ -23,10 +22,11 @@ class DocumentDtoMapperTest {
         DocumentDto result = uut.mapFromDocument(document);
 
         // verify - then
-        Assertions.assertThat(result)
-                  .usingRecursiveComparison()
-                  .ignoringFields("docid")
-                  .isEqualTo(TestdataSupplier.createDocumentDtoTestdata());
+        Assertions
+            .assertThat(result)
+            .usingRecursiveComparison()
+            .ignoringFields("docid")
+            .isEqualTo(TestdataSupplier.createDocumentDtoTestdata());
     }
 
     @Test
@@ -34,20 +34,18 @@ class DocumentDtoMapperTest {
         // prepare
         Document document = TestdataSupplier.createDocumentTestdata();
         document.setTitle(null);
-        DocumentDto expectedResult = DocumentDto.builder()
-                                                .docid(UUID.randomUUID())
-                                                .title(null)
-                                                .person("githubUser")
-                                                .filesize(2048)
-                                                .build();
+        DocumentDto expectedResult = DocumentDto
+            .builder()
+            .docid(UUID.randomUUID())
+            .title(null)
+            .person("githubUser")
+            .filesize(2048)
+            .build();
 
         // execute
         DocumentDto result = uut.mapFromDocument(document);
 
         // verify
-        Assertions.assertThat(result)
-                  .usingRecursiveComparison()
-                  .ignoringFields("docid")
-                  .isEqualTo(expectedResult);
+        Assertions.assertThat(result).usingRecursiveComparison().ignoringFields("docid").isEqualTo(expectedResult);
     }
 }

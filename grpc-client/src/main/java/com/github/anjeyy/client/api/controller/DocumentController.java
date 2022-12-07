@@ -28,10 +28,8 @@ public class DocumentController {
     private final GrpcDocumentServiceClient documentServiceClient;
     private final DocumentDtoMapper documentDtoMapper;
 
-
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DocumentDto> getDocumentsById(@PathVariable UUID id) {
-
         DocumentResponse foundDocument = documentServiceClient.getDocumentsWithId(id);
         DocumentDto response = documentDtoMapper.mapFromGrpcDocumentResponse(foundDocument);
         return ResponseEntity.ok(response);
@@ -40,23 +38,21 @@ public class DocumentController {
     @GetMapping(path = "/wrapper", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DocumentDto>> getAllDocumentsAsList() {
         DocumentResponseList allDocuments = documentServiceClient.getAllDocumentsAsList();
-        List<DocumentDto> response =
-            documentDtoMapper.mapFromGrpcDocumentResponseList(allDocuments.getDocumentResponseList());
+        List<DocumentDto> response = documentDtoMapper.mapFromGrpcDocumentResponseList(
+            allDocuments.getDocumentResponseList()
+        );
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping(path = "/stream", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<DocumentDto>> getAllDocumentsFromStream(
-    ) {
+    public ResponseEntity<List<DocumentDto>> getAllDocumentsFromStream() {
         Iterator<DocumentResponse> allDocuments = documentServiceClient.getAllDocumentsAsIterator();
         List<DocumentResponse> allDocs = Lists.newArrayList(allDocuments);
-        List<DocumentDto> response =
-            documentDtoMapper.mapFromGrpcDocumentResponseList(allDocs);
+        List<DocumentDto> response = documentDtoMapper.mapFromGrpcDocumentResponseList(allDocs);
 
         return ResponseEntity.ok(response);
     }
-
 
     @GetMapping(path = "/flux", produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<DocumentDto> getAllDocumentsWithFlux() {
@@ -65,6 +61,4 @@ public class DocumentController {
 
         return response;
     }
-
-
 }

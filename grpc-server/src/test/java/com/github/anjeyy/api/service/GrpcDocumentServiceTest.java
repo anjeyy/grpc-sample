@@ -20,11 +20,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 @DirtiesContext
-@SpringBootTest(properties = {
-    "grpc.server.inProcessName=test",
-    "grpc.server.port=-1",
-    "grpc.client.inProcess.address=in-process:test",
-})
+@SpringBootTest(
+    properties = {
+        "grpc.server.inProcessName=test", "grpc.server.port=-1", "grpc.client.inProcess.address=in-process:test",
+    }
+)
 class GrpcDocumentServiceTest {
 
     @GrpcClient("inProcess")
@@ -33,33 +33,27 @@ class GrpcDocumentServiceTest {
     @GrpcClient("inProcess")
     private DocumentServiceGrpc.DocumentServiceStub documentServiceNonBlockingStub;
 
-
     @Test
     @DirtiesContext
     void getAllDocuments_blockingStub() {
-
         //given
         Empty testInput = Empty.newBuilder().build();
 
         // when
         Iterator<DocumentResponse> actualResult = documentServiceBlockingStub.getAllDocuments(testInput);
-        Spliterator<DocumentResponse> spliterator =
-            Spliterators.spliteratorUnknownSize(actualResult, Spliterator.ORDERED);
-        List<DocumentResponse> actualResultList =
-            StreamSupport.stream(spliterator, false).collect(Collectors.toList());
+        Spliterator<DocumentResponse> spliterator = Spliterators.spliteratorUnknownSize(
+            actualResult,
+            Spliterator.ORDERED
+        );
+        List<DocumentResponse> actualResultList = StreamSupport.stream(spliterator, false).collect(Collectors.toList());
 
         // then
-        assertThat(actualResultList).isNotNull()
-                                    .hasSize(2)
-                                    .usingRecursiveComparison()
-                                    .isEqualTo(createExpected());
-
+        assertThat(actualResultList).isNotNull().hasSize(2).usingRecursiveComparison().isEqualTo(createExpected());
     }
 
     @Test
     @DirtiesContext
     void getAllDocuments_nonBlockingStub() throws Exception {
-
         //given
         Empty testInput = Empty.newBuilder().build();
 
@@ -73,11 +67,11 @@ class GrpcDocumentServiceTest {
 
         // then
         assertThat(actualResponse.getError()).isNull();
-        assertThat(actualResponse.getValues()).isNotEmpty()
-                                              .hasSize(2)
-                                              .usingRecursiveComparison()
-                                              .isEqualTo(createExpected());
-
+        assertThat(actualResponse.getValues())
+            .isNotEmpty()
+            .hasSize(2)
+            .usingRecursiveComparison()
+            .isEqualTo(createExpected());
     }
 
     // ###################
@@ -85,18 +79,20 @@ class GrpcDocumentServiceTest {
     // ###################
 
     private List<DocumentResponse> createExpected() {
-        DocumentResponse first = DocumentResponse.newBuilder()
-                                                 .setDocId("29e84b17-b32c-49b9-8497-63833144c210")
-                                                 .setTitle("TEST_TITEL")
-                                                 .setPerson("integration-test")
-                                                 .setFilesize(4096)
-                                                 .build();
-        DocumentResponse second = DocumentResponse.newBuilder()
-                                                  .setDocId("39e84b17-b32c-49b9-8497-63833144c210")
-                                                  .setTitle("TEST_TITEL_TWO")
-                                                  .setPerson("integration-test")
-                                                  .setFilesize(2048)
-                                                  .build();
+        DocumentResponse first = DocumentResponse
+            .newBuilder()
+            .setDocId("29e84b17-b32c-49b9-8497-63833144c210")
+            .setTitle("TEST_TITEL")
+            .setPerson("integration-test")
+            .setFilesize(4096)
+            .build();
+        DocumentResponse second = DocumentResponse
+            .newBuilder()
+            .setDocId("39e84b17-b32c-49b9-8497-63833144c210")
+            .setTitle("TEST_TITEL_TWO")
+            .setPerson("integration-test")
+            .setFilesize(2048)
+            .build();
 
         return List.of(first, second);
     }

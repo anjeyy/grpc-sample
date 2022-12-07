@@ -19,16 +19,14 @@ public class DocumentController {
 
     private final DocumentService documentService;
 
-
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DocumentDto> createCustomPrometheusMetrics(@PathVariable UUID id) {
+    public ResponseEntity<DocumentDto> getDocumentById(@PathVariable UUID id) {
         DocumentDto response = documentService.findDocumentById(id);
         return ResponseEntity.ok(response);
     }
 
-
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<DocumentDto>> createCustomPrometheusMetrics() {
+    public ResponseEntity<List<DocumentDto>> getAllDocuments() {
         List<DocumentDto> response = documentService.findAllDocuments();
         return ResponseEntity.ok(response);
     }

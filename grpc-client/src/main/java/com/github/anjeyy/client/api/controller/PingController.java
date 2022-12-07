@@ -15,10 +15,8 @@ public class PingController {
 
     private final GrpcHelloServiceClient grpcHelloServiceClient;
 
-    
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createCustomPrometheusMetrics() {
-
         String response = grpcHelloServiceClient.sayHello();
         return ResponseEntity.ok(response);
     }

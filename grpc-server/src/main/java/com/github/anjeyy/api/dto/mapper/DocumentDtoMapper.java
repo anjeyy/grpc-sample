@@ -7,7 +7,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface DocumentDtoMapper {
-
     @Mapping(target = "person", source = "person")
     DocumentDto mapFromDocument(Document document);
 }

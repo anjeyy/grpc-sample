@@ -11,12 +11,13 @@ public final class TestdataSupplier {
     }
 
     public static DocumentDto createDocumentDtoTestdata() {
-        return DocumentDto.builder()
-                          .docid(UUID.randomUUID())
-                          .title("JUnit Test")
-                          .person("githubUser")
-                          .filesize(2048)
-                          .build();
+        return DocumentDto
+            .builder()
+            .docid(UUID.randomUUID())
+            .title("JUnit Test")
+            .person("githubUser")
+            .filesize(2048)
+            .build();
     }
 
     public static Document createDocumentTestdata() {

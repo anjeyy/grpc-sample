@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 public class ObjectMapperConfig implements InitializingBean {
 
     private final ObjectMapper objectMapper;
-    
 
     @Override
     public void afterPropertiesSet() throws Exception {

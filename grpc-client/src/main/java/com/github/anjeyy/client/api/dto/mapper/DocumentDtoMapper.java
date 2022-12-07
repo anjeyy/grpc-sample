@@ -8,11 +8,9 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface DocumentDtoMapper {
-
     @Mapping(target = "docid", source = "docId")
     @Mapping(target = "person", source = "person")
     DocumentDto mapFromGrpcDocumentResponse(DocumentResponse document);
 
     List<DocumentDto> mapFromGrpcDocumentResponseList(List<DocumentResponse> document);
-
 }

@@ -16,16 +16,15 @@ class GrpcHelloServiceTest {
 
     private final GrpcHelloService uut = new GrpcHelloService();
 
-
     @Test
     void hello() throws Exception {
         // given
         HelloRequest testInput = HelloRequest.newBuilder().setFirstName("Andjelko").setLastName("Perisic").build();
         StreamRecorder<HelloResponse> actualResponse = StreamRecorder.create();
-        HelloResponse expectedResponse =
-            HelloResponse.newBuilder()
-                         .setGreeting("Hello Perisic, Andjelko. This is my first grpc response with spring boot.")
-                         .build();
+        HelloResponse expectedResponse = HelloResponse
+            .newBuilder()
+            .setGreeting("Hello Perisic, Andjelko. This is my first grpc response with spring boot.")
+            .build();
 
         // when
         uut.hello(testInput, actualResponse);
@@ -36,11 +35,11 @@ class GrpcHelloServiceTest {
             Assertions.fail("Timeout - no response received.");
         }
         assertThat(actualResponse.getError()).isNull();
-        assertThat(actualResponse.getValues()).isNotEmpty()
-                                              .hasSize(1)
-                                              .element(0)
-                                              .extracting(HelloResponse::getGreeting)
-                                              .isEqualTo(expectedResponse.getGreeting());
+        assertThat(actualResponse.getValues())
+            .isNotEmpty()
+            .hasSize(1)
+            .element(0)
+            .extracting(HelloResponse::getGreeting)
+            .isEqualTo(expectedResponse.getGreeting());
     }
-    
 }

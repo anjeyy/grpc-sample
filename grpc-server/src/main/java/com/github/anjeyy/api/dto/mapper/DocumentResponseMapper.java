@@ -11,18 +11,14 @@ import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface DocumentResponseMapper {
-
     List<DocumentResponse> mapFromDocumentList(List<DocumentDto> document);
-
 
     @Mapping(target = "docId", source = "docid", qualifiedByName = "uuidToString")
     @Mapping(target = "person", source = "person")
     DocumentResponse mapFromDocument(DocumentDto document);
 
-
     @Named("uuidToString")
-    public static String uuidToString(UUID id) {
+    static String uuidToString(UUID id) {
         return Optional.ofNullable(id).map(UUID::toString).orElse("");
     }
-
 }
