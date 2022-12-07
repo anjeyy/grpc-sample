@@ -5,11 +5,11 @@ import com.github.anjeyy.api.dao.repository.DocumentRepository;
 import com.github.anjeyy.api.dto.mapper.DocumentDtoMapper;
 import com.github.anjeyy.api.dto.model.DocumentDto;
 import com.github.anjeyy.infrastructure.exception.ResourceNotFoundException;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public class DocumentService {
 
         return document.stream()
                        .map(documentDtoMapper::mapFromDocument)
-                       .collect(Collectors.toList());
+                       .toList();
     }
 
     public DocumentDto findDocumentById(UUID id) {

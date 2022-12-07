@@ -2,12 +2,13 @@ package com.github.anjeyy.api.dto.mapper;
 
 import com.github.anjeyy.api.dto.model.DocumentDto;
 import com.github.anjeyy.proto.document.DocumentResponse;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public interface DocumentResponseMapper {
@@ -21,7 +22,7 @@ public interface DocumentResponseMapper {
 
 
     @Named("uuidToString")
-    public static String uuidToString(UUID id) {
+    static String uuidToString(UUID id) {
         return Optional.ofNullable(id).map(UUID::toString).orElse("");
     }
 
